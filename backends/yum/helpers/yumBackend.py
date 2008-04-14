@@ -815,6 +815,8 @@ class PackageKitYumBackend(PackageKitBaseBackend):
             #we might have a rounding error
             self.percentage(100)
 
+        except yum.Errors.RepoError, e:
+            self.error(ERROR_REPO_CONFIGURATION_ERROR, str(e))
         except yum.Errors.YumBaseError, e:
             self.error(ERROR_INTERNAL_ERROR,str(e))
 
