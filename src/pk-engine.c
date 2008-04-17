@@ -75,9 +75,9 @@ static void     pk_engine_finalize	(GObject       *object);
  *
  * We probably also need to wait for NetworkManager to come back up if we are
  * resuming, and we probably don't want to be doing this at a busy time after
- * a yum tramsaction.
+ * a yum transaction.
  */
-#define PK_ENGINE_STATE_CHANGED_TIMEOUT		5 /* seconds */
+#define PK_ENGINE_STATE_CHANGED_TIMEOUT		10 /* seconds */
 
 struct PkEnginePrivate
 {
@@ -2657,9 +2657,17 @@ pk_engine_cancel (PkEngine *engine, const gchar *tid, GError **error)
 static gboolean
 pk_engine_state_changed_cb (gpointer data)
 {
+	gboolean ret;
 	PkEngine *engine = PK_ENGINE (data);
 
 	g_return_val_if_fail (PK_IS_ENGINE (engine), FALSE);
+
+	/* if NetworkManager is not up, then just reschedule */
+	ret = pk_network_is_online (engine->priv->network);
+	if (!ret) {
+		/* wait another timeout of PK_ENGINE_STATE_CHANGED_TIMEOUT */
+		return TRUE;
+	}
 
 	if (engine->priv->updates_cache != NULL) {
 		pk_debug ("unreffing updates cache as state may have changed");
