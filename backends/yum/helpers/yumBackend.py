@@ -418,10 +418,7 @@ class PackageKitYumBackend(PackageKitBaseBackend):
         self.status(STATUS_QUERY)
         self.yumbase.doConfigSetup(errorlevel=0,debuglevel=0)# Setup Yum Config
 
-        try:
-            self._do_search(searchlist, filters, key)
-        except RefreshYumCacheFailed, e:
-            return
+        self._do_search(searchlist, filters, key)
 
     def search_details(self,filters,key):
         '''
@@ -434,10 +431,7 @@ class PackageKitYumBackend(PackageKitBaseBackend):
         searchlist = ['name', 'summary', 'description', 'group']
         self.status(STATUS_QUERY)
 
-        try:
-            self._do_search(searchlist, filters, key)
-        except RefreshYumCacheFailed, e:
-            return
+        self._do_search(searchlist, filters, key)
 
     def _buildGroupDict(self):
         pkgGroups= {}
