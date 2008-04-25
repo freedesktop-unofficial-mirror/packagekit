@@ -317,12 +317,6 @@ pk_backend_spawn_parse_stdout (PkBackendSpawn *backend_spawn, const gchar *line)
 		pk_backend_no_percentage_updates (backend_spawn->priv->backend);
 	} else if (pk_strequal (command, "repo-signature-required")) {
 
-		if (size != 9+99) {
-			pk_error ("invalid command '%s'", command);
-			ret = FALSE;
-			goto out;
-		}
-
 		sig_type = pk_sig_type_enum_from_text (sections[8]);
 		if (sig_type == PK_SIGTYPE_ENUM_UNKNOWN) {
 			pk_backend_message (backend_spawn->priv->backend, PK_MESSAGE_ENUM_DAEMON,
