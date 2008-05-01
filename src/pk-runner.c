@@ -1035,6 +1035,9 @@ pk_runner_finished_cb (PkBackend *backend, PkExitEnum exit, PkRunner *runner)
 		return;
 	}
 
+	/* remove any inhibit */
+	pk_inhibit_remove (runner->priv->inhibit, runner);
+
 	/* we should get no more from the backend with this tid */
 	runner->priv->finished = TRUE;
 }
@@ -1067,6 +1070,13 @@ pk_runner_allow_cancel_cb (PkBackend *backend, gboolean allow_cancel, PkRunner *
 {
 	g_return_if_fail (PK_IS_RUNNER (runner));
 	g_return_if_fail (runner->priv->backend->desc->cancel != NULL);
+
+	/* remove or add the hal inhibit */
+	if (allow_cancel) {
+		pk_inhibit_remove (runner->priv->inhibit, runner);
+	} else {
+		pk_inhibit_add (runner->priv->inhibit, runner);
+	}
 
 	pk_debug ("AllowCancel now %i", allow_cancel);
 	runner->priv->allow_cancel = allow_cancel;
