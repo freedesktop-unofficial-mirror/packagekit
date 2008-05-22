@@ -1498,11 +1498,7 @@ class DownloadCallback(BaseMeter):
         '''
         Get the name of the package being downloaded
         '''
-        if self.text and type(self.text) == type(""):
-            name = self.text
-        else:
-            name = self.basename
-        return name
+        return self.basename
 
     def updateProgress(self,name,frac,fread,ftime):
         '''
